@@ -4,12 +4,37 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+    inputs:
+      pull-request-number:
+        description: 'PR number'
+        required: true
 
 jobs:
+  filter:
+    runs-on: ubuntu-latest
+    outputs:
+      test: ${{ steps.filter.outputs.test }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          test:
+            - "**.md"
   select-env:
+    needs: filter
+    if: ${{ needs.filter.outputs.test == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: aquaproj/aqua-installer@v2.3.0
+        with:
+          aqua_version: v2.21.0
       - run: ls -la
       - id: pr
+        if: ${{ inputs.pull-request-number == '' }}
         uses: ./.github/composite/get-pr-number-from-sha
+      - run: github-comment post -template ${{ steps.pr.outputs.number || inputs.pull-request-number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

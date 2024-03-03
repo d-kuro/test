@@ -37,4 +37,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME=$(gh pr view --json headRefName --jq .headRefName ${{ github.event.issue.number }})
-          github-comment exec -- gh workflow run --ref ${BRANCH_NAME} test.yaml
+          github-comment exec -- gh workflow run -f pull-request-number=${{ github.event.issue.number }} --ref ${BRANCH_NAME} test.yaml

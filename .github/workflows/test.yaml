@@ -10,7 +10,7 @@ on:
         required: true
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
@@ -39,6 +39,6 @@ jobs:
       - id: pr
         if: ${{ inputs.pull-request-number == '' }}
         uses: ./.github/composite/get-pr-number-from-sha
-      - run: github-comment post -template ${{ steps.pr.outputs.number || inputs.pull-request-number }}
+      - run: github-comment post --pr ${{ steps.pr.outputs.number || inputs.pull-request-number }} -template ${{ steps.pr.outputs.number || inputs.pull-request-number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

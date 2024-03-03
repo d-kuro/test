@@ -11,3 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: ls -la
+      - id: pr
+        uses: ./.github/composite/get-pr-number-from-sha

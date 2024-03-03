@@ -9,6 +9,10 @@ on:
         description: 'PR number'
         required: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   filter:
     runs-on: ubuntu-latest
